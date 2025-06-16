@@ -167,7 +167,7 @@
 
             try {
                 // Constrói a URL com o CPF como um parâmetro de consulta
-                const apiUrl = `http://172.17.2.17:5000/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2-back?cpf=${encodeURIComponent(cpf)}`;
+                const apiUrl = `http://{{ ip }}:{{ port }}/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2-back?cpf=${encodeURIComponent(cpf)}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'GET', // Método GET

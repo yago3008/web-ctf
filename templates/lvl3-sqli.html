@@ -155,7 +155,7 @@
 
             try {
                 // Constrói a URL com o ID da imagem como um parâmetro de consulta
-                const apiUrl = `http://172.17.2.17:5000/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3-back?id=${encodeURIComponent(imageId)}`;
+                const apiUrl = `http://{{ ip }}:{{ port }}/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3-back?id=${encodeURIComponent(imageId)}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'GET', // Método GET

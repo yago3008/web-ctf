@@ -167,7 +167,7 @@
 
             try {
                 // Constroi a URL com o username como um parametro de consulta
-                const apiUrl = `http://172.17.2.17:5000/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1-back?username=${encodeURIComponent(username)}`;
+                const apiUrl = `http://{{ ip }}:{{ port }}/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1-back?username=${encodeURIComponent(username)}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'GET', // Metodo GET correto

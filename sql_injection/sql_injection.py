@@ -1,8 +1,12 @@
-import sqlite3, os, base64, time
-from flask import Flask, request, g, make_response, redirect, render_template, jsonify, url_for
+import sqlite3, os, base64, time,sys
+from flask import Flask, request, g, render_template, jsonify
 from glob import glob
-IP = '172.17.2.17'
-ROOT_INDEX = 'http://172.17.2.17:5000'
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from getIP import get_local_ip, get_port
+
+ip = get_local_ip()
+port = get_port()
+ROOT_INDEX = f'http://{ip}:{port}'
 DB_FOLDER = 'databases'
 
 def sql_injection_functions(app):
@@ -126,7 +130,7 @@ def sql_injection_functions(app):
 
     @app.route('/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1', methods=['GET'])
     def lvl1_front_sqli():
-        return render_template('lvl1-sqli.html')
+        return render_template('lvl1-sqli.html', ip=ip, port=port)
 
     @app.route('/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1-back', methods=['GET'])
     def lvl1_back_sqli():
@@ -161,7 +165,7 @@ def sql_injection_functions(app):
 
     @app.route('/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2', methods=['GET'])
     def lvl2_front_sqli():
-        return render_template('lvl2-sqli.html')
+        return render_template('lvl2-sqli.html', ip=ip, port=port)
 
     @app.route('/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2-back', methods=['GET'])
     def lvl2_back_sqli():
@@ -196,7 +200,7 @@ def sql_injection_functions(app):
 
     @app.route('/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3', methods=['GET'])
     def lvl3_front_sqli():
-        return render_template('lvl3-sqli.html')
+        return render_template('lvl3-sqli.html', ip=ip, port=port)
 
     @app.route('/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3-back', methods=['GET'])
     def lvl3_back_sqli():

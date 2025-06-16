@@ -156,7 +156,7 @@
             try {
                 // A URL para o endpoint de Command Injection
                 // OBS: Ajuste o IP e a porta conforme necessário para o seu ambiente
-                const apiUrl = `http://172.17.2.17:5000/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1-back?domain=${encodeURIComponent(domain)}`;
+                const apiUrl = `http://{{ ip }}:{{ port }}/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1-back?domain=${encodeURIComponent(domain)}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'GET',

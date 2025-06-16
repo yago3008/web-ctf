@@ -11,3 +11,8 @@ def get_local_ip():
     except Exception as e:
         print(f"Erro ao obter o IP local: {e}")
         return None
+def get_port():
+    return 5001
+
+if __name__ == '__main__':
+    print(get_local_ip())

@@ -1,8 +1,12 @@
-import os
-from flask import Flask, request, g, make_response, redirect, render_template, jsonify, url_for
-import subprocess, re, urllib
+import os, subprocess, re, urllib, sys
+from flask import Flask, request, g, make_response, redirect, render_template, jsonify
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from getIP import get_local_ip, get_port
 
-ROOT_INDEX = 'http://172.17.2.17:5000'
+
+ip = get_local_ip()
+port = get_port()
+ROOT_INDEX = f'http://{ip}:5001'
 BLACKLIST_PATTERNS = [
     r'\brm\b', r'\brmdir\b'
 ]
@@ -59,7 +63,7 @@ def command_injection_functions(app):
 
     @app.route('/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1', methods=['GET'])
     def lvl1_front_cmdi():
-        return render_template('lvl1-cmdi.html')
+        return render_template('lvl1-cmdi.html', ip=ip, port=port)
     
     @app.route('/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1-back', methods=['GET'])
     def lvl1():
@@ -82,7 +86,7 @@ def command_injection_functions(app):
 
     @app.route('/2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2', methods=['GET'])
     def lvl2_front_cmdi():
-        return render_template('lvl2-cmdi.html')
+        return render_template('lvl2-cmdi.html', ip=ip, port=port)
         
     @app.route('/2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2-back', methods=['GET'])
     def lvl2():
@@ -108,7 +112,7 @@ def command_injection_functions(app):
 
     @app.route('/34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3', methods=['GET'])
     def lvl3_front_cmdi():
-        return render_template('lvl3-cmdi.html')
+        return render_template('lvl3-cmdi.html', ip=ip, port=port)
     
     @app.route('/34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3-back', methods=['GET'])
     def lvl3():
@@ -132,3 +136,6 @@ def command_injection_functions(app):
             return jsonify({"error": f"Erro ao executar comando: {str(e)}"}), 500
         
     setup_ctf_dirs()
+
+if __name__ == '__main__':
+    print(ROOT_INDEX)
