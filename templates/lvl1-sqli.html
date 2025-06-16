@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nível 1 - Informações do Usuário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* bg-gray-900 */
+            color: #e2e8f0; /* text-gray-200 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative; /* Necessario para posicionamento absoluto do marcador e do titulo do lab */
+        }
+        .container {
+            background-color: #2d3748; /* bg-gray-800 */
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 10; /* Garante que o container esteja acima dos elementos posicionados absolutamente */
+        }
+        input[type="text"] {
+            background-color: #4a5568; /* bg-gray-700 */
+            border: 1px solid #4a5568;
+            color: #e2e8f0;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #63b3ed; /* blue-400 */
+        }
+        button {
+            background-color: #4299e1; /* bg-blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #3182ce; /* bg-blue-600 */
+        }
+        .response-box {
+            background-color: #1a202c; /* bg-gray-900 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-height: 80px;
+            display: flex; /* Mantém flexbox para centralizar se o conteúdo for pequeno */
+            flex-direction: column; /* Coloca o conteúdo em coluna para que as tags <p> se empilhem */
+            align-items: flex-start; /* Alinha o texto a esquerda dentro da caixa */
+            justify-content: center; /* Centraliza verticalmente se o conteúdo for pequeno */
+            text-align: left; /* Garante alinhamento a esquerda */
+            word-break: break-all;
+            white-space: normal; /* Permite que o HTML gerado formate o espaco em branco normalmente */
+            font-size: 0.9rem;
+        }
+        .response-box p {
+            margin: 0; /* Remove margem padrao de paragrafos */
+            padding: 0;
+            line-height: 1.5; /* Espacamento entre linhas */
+        }
+        .response-box a {
+            color: #63b3ed; /* Cor dos links */
+            text-decoration: underline; /* Sublinhado padrao para links */
+        }
+        .response-box a:hover {
+            color: #4299e1; /* Cor do link ao passar o mouse */
+        }
+        .error-message {
+            color: #fc8181; /* red-400 */
+        }
+        .success-message {
+            color: #68d391; /* green-400 */
+        }
+        .user-separator {
+            width: 100%;
+            height: 1px;
+            background-color: #4a5568; /* Cor do separador */
+            margin: 1rem 0; /* Espacamento para o separador */
+        }
+
+        /* ESTILOS PARA O MARCADOR DE DIFICULDADE */
+        .difficulty-marker {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #48bb78; /* bg-green-500 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 700; /* font-bold */
+            font-size: 0.875rem; /* text-sm */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 20; /* Garante que o marcador esteja acima de tudo */
+        }
+
+        /* NOVO ESTILO PARA O TÍTULO DO LAB */
+        .lab-title {
+            position: absolute;
+            top: 1rem; /* Posição do topo */
+            left: 50%; /* Centraliza horizontalmente */
+            transform: translateX(-50%); /* Ajuste para centralização perfeita */
+            color: #cbd5e0; /* Cor do texto (gray-300) */
+            font-size: 1.5rem; /* Tamanho da fonte */
+            font-weight: 700; /* Negrito */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
+            z-index: 20; /* Garante que esteja acima de outros elementos */
+        }
+    </style>
+</head>
+<body>
+    <div class="lab-title">
+        SQL Injection
+    </div>
+
+    <div class="difficulty-marker">
+        Nível 1 - Easy
+    </div>
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center">Nível 1</h1>
+        <p class="text-center text-lg mt-2">
+            Entre com um usuário para puxar informações:
+        </p>
+
+        <form id="userForm" class="flex flex-col gap-4">
+            <input
+                type="text"
+                id="usernameInput"
+                placeholder="Digite o nome do usuário"
+                required
+                class="w-full"
+            />
+            <button type="submit">Buscar Informações</button>
+        </form>
+
+        <div id="responseDisplay" class="response-box">
+            A resposta da API aparecerá aqui.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Impede o envio padrao do formulario
+
+            const username = document.getElementById('usernameInput').value;
+            const responseDisplay = document.getElementById('responseDisplay');
+
+            responseDisplay.textContent = 'Buscando informacoes...';
+            responseDisplay.className = 'response-box'; // Reseta classes de estilo
+
+            try {
+                // Constroi a URL com o username como um parametro de consulta
+                const apiUrl = `http://172.17.2.17:5000/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1-back?username=${encodeURIComponent(username)}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET', // Metodo GET correto
+                    headers: {
+                        'Accept': 'application/json' // Indica que o cliente aceita JSON
+                    },
+                    // *** REMOVIDO: NENHUM CORPO PARA REQUISICOES GET ***
+                });
+
+                if (!response.ok) {
+                    let errorMessage = `Erro HTTP! Status: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.error) {
+                            errorMessage += ` - ${errorData.error}`;
+                        } else {
+                            errorMessage += ` - ${JSON.stringify(errorData, null, 2)}`;
+                        }
+                    } catch (jsonError) {
+                        // Se nao conseguir parsear como JSON, tenta pegar o texto puro
+                        const errorText = await response.text();
+                        errorMessage += ` - ${errorText || 'Resposta vazia ou nao JSON.'}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json(); // Tenta parsear como JSON
+                
+                let displayHtml = ''; // Agora vamos construir HTML
+                if (data.error) {
+                    displayHtml = `<p>Erro: ${data.error}</p>`;
+                    responseDisplay.classList.add('error-message');
+                } else if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    // Se houver dados de usuarios, formate-os
+                    displayHtml = data.data.map(user => {
+                        let userBlock = `<p>ID: ${user.id}</p>`;
+                        let usernameContent = user.username;
+                        let emailContent = user.email;
+
+                        // Se o ID for 2, transformar em hyperlink
+                        if (user.id === 2) {
+                            // Usar o valor sem encodeURIComponent para href, pois ja eh um URL valido
+                            usernameContent = `<a href="${user.username}" target="_blank" class="text-blue-400 hover:underline">${user.username}</a>`;
+                            emailContent = `<a href="${user.email}" target="_blank" class="text-blue-400 hover:underline">${user.email}</a>`;
+                        }
+                        
+                        userBlock += `<p>Username: ${usernameContent}</p>`;
+                        userBlock += `<p>Email: ${emailContent}</p>`;
+                        
+                        return userBlock;
+                    }).join('<div class="user-separator"></div>'); // Separador HTML entre usuarios
+                    
+                    responseDisplay.classList.add('success-message');
+                } else if (data.message) {
+                    displayHtml = `<p>${data.message}</p>`;
+                    responseDisplay.classList.add('success-message');
+                } else {
+                    // Fallback para qualquer outra estrutura de resposta inesperada
+                    displayHtml = `<pre>${JSON.stringify(data, null, 2)}</pre>`; // Mantem pre-formatado para JSON
+                    responseDisplay.classList.add('success-message');
+                }
+
+                // Usar innerHTML para que as tags HTML (incluindo <a> e <p>) sejam renderizadas
+                responseDisplay.innerHTML = displayHtml; 
+
+            } catch (error) {
+                console.error('Erro ao buscar informacoes:', error);
+                // Para erros, ainda usamos textContent para evitar injecao acidental de HTML do erro
+                responseDisplay.textContent = `Erro: ${error.message || 'Nao foi possivel conectar a API.'}`;
+                responseDisplay.classList.add('error-message');
+            }
+        });
+    </script>
+</body>
+</html>

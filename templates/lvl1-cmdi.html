@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nível 1 - Command Injection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* bg-gray-900 */
+            color: #e2e8f0; /* text-gray-200 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative; /* Necessario para posicionamento absoluto do marcador e do titulo do lab */
+        }
+        .container {
+            background-color: #2d3748; /* bg-gray-800 */
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 10; /* Garante que o container esteja acima dos elementos posicionados absolutamente */
+        }
+        input[type="text"] {
+            background-color: #4a5568; /* bg-gray-700 */
+            border: 1px solid #4a5568;
+            color: #e2e8f0;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #63b3ed; /* blue-400 */
+        }
+        button {
+            background-color: #4299e1; /* bg-blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #3182ce; /* bg-blue-600 */
+        }
+        .response-box {
+            background-color: #1a202c; /* bg-gray-900 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            text-align: left;
+            word-break: break-all;
+            white-space: pre-wrap; /* Mantém quebras de linha e espaços do resultado do comando */
+            font-size: 0.9rem;
+            overflow-x: auto; /* Adiciona scroll horizontal se o conteúdo for muito largo */
+        }
+        .response-box p {
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        .error-message {
+            color: #fc8181; /* red-400 */
+        }
+        .success-message {
+            color: #68d391; /* green-400 */
+        }
+
+        /* ESTILOS PARA O MARCADOR DE DIFICULDADE */
+        .difficulty-marker {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #48bb78; /* bg-green-500 para nível Easy */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 700; /* font-bold */
+            font-size: 0.875rem; /* text-sm */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 20; /* Garante que o marcador esteja acima de tudo */
+        }
+
+        /* NOVO ESTILO PARA O TÍTULO DO LAB */
+        .lab-title {
+            position: absolute;
+            top: 1rem; /* Posição do topo */
+            left: 50%; /* Centraliza horizontalmente */
+            transform: translateX(-50%); /* Ajuste para centralização perfeita */
+            color: #cbd5e0; /* Cor do texto (gray-300) */
+            font-size: 1.5rem; /* Tamanho da fonte */
+            font-weight: 700; /* Negrito */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
+            z-index: 20; /* Garante que esteja acima de outros elementos */
+        }
+    </style>
+</head>
+<body>
+    <div class="lab-title">
+        Command Injection
+    </div>
+
+    <div class="difficulty-marker">
+        Nível 1 - Easy
+    </div>
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center">Nível 1</h1>
+        <p class="text-center text-lg mt-2">
+            Verifique a conectividade de um domínio:
+        </p>
+
+        <form id="commandForm" class="flex flex-col gap-4">
+            <input
+                type="text"
+                id="domainInput"
+                placeholder="Ex: google.com"
+                required
+                class="w-full"
+            />
+            <button type="submit">Pingar Domínio</button>
+        </form>
+
+        <div id="responseDisplay" class="response-box">
+            O resultado do comando aparecerá aqui.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('commandForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const domain = document.getElementById('domainInput').value;
+            const responseDisplay = document.getElementById('responseDisplay');
+
+            responseDisplay.innerHTML = '<p>Executando comando...</p>';
+            responseDisplay.className = 'response-box'; // Reseta classes de estilo
+
+            try {
+                // A URL para o endpoint de Command Injection
+                // OBS: Ajuste o IP e a porta conforme necessário para o seu ambiente
+                const apiUrl = `http://172.17.2.17:5000/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1-back?domain=${encodeURIComponent(domain)}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                });
+
+                if (!response.ok) {
+                    let errorMessage = `Erro HTTP! Status: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.error) {
+                            errorMessage += ` - ${errorData.error}`;
+                        } else {
+                            errorMessage += ` - ${JSON.stringify(errorData, null, 2)}`;
+                        }
+                    } catch (jsonError) {
+                        const errorText = await response.text();
+                        errorMessage += ` - ${errorText || 'Resposta vazia ou não JSON.'}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+                
+                let displayHtml = '';
+                if (data.error) {
+                    displayHtml = `<p class="error-message">Erro: ${data.error}</p>`;
+                    responseDisplay.classList.add('error-message');
+                } else if (data.result) {
+                    // Pre-wrap para manter a formatação da saída do comando
+                    displayHtml = `<p class="success-message">Resultado:</p><pre>${data.result}</pre>`;
+                    responseDisplay.classList.add('success-message');
+                } else {
+                    displayHtml = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    responseDisplay.classList.add('success-message');
+                }
+
+                responseDisplay.innerHTML = displayHtml; 
+
+            } catch (error) {
+                console.error('Erro ao executar comando:', error);
+                responseDisplay.innerHTML = `<p class="error-message">Erro: ${error.message || 'Não foi possível conectar a API.'}</p>`;
+                responseDisplay.classList.add('error-message');
+            }
+        });
+    </script>
+</body>
+</html>

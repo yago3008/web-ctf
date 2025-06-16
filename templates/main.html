@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - Vulnerabilidades</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* bg-gray-900 */
+            color: #e2e8f0; /* text-gray-200 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative; /* Necessario para posicionamento absoluto do marcador */
+        }
+        .container {
+            background-color: #2d3748; /* bg-gray-800 */
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 10; /* Garante que o container esteja acima do marcador se houver sobreposicao */
+        }
+        h1 {
+            color: #e2e8f0; /* text-gray-200 */
+            font-size: 2.25rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        p {
+            color: #a0aec0; /* text-gray-400 */
+            text-align: center;
+            font-size: 1.125rem; /* text-lg */
+            margin-top: -0.5rem; /* Ajuste para espaçamento */
+            margin-bottom: 1.5rem; /* Espaçamento após o subtítulo */
+        }
+        /* Nova classe para o container de botões para flexbox */
+        .buttons-grid {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            justify-content: center; /* Centraliza os botões */
+            gap: 1rem; /* Espaço entre os botões */
+        }
+        .menu-item {
+            /* Estilos base já existentes */
+            background-color: #4299e1; /* bg-blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem; /* Padding mais equilibrado para um visual retangular */
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s;
+            cursor: pointer;
+            text-decoration: none; /* Remove sublinhado padrão dos links */
+
+            /* Novos estilos para layout e formato retangular */
+            display: flex; /* Usa flexbox para centralizar o conteúdo interno */
+            align-items: center; /* Centraliza verticalmente o texto */
+            justify-content: center; /* Centraliza horizontalmente o texto */
+            text-align: center; /* Garante que o texto seja centralizado para o caso de múltiplas linhas */
+            flex-grow: 1; /* Permite que o item cresça para preencher o espaço */
+            flex-basis: calc(50% - 0.5rem); /* Define a largura base para 2 colunas, considerando o gap */
+            max-width: calc(50% - 0.5rem); /* Garante que não exceda metade da largura do container */
+            /* aspect-ratio: 1 / 1; REMOVIDO para permitir formato retangular */
+            box-sizing: border-box; /* Inclui padding e border na largura e altura */
+        }
+        .menu-item:hover {
+            background-color: #3182ce; /* bg-blue-600 */
+        }
+
+        /* ESTILOS PARA O MARCADOR DE DIFICULDADE */
+        .difficulty-marker {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #ecc94b; /* Amarelo para indicar "Menu" ou "Início" */
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 700; /* font-bold */
+            font-size: 0.875rem; /* text-sm */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 20; /* Garante que o marcador esteja acima de tudo */
+        }
+    </style>
+</head>
+<body>
+    <!-- MARCADOR -->
+    <div class="difficulty-marker">
+        Menu Principal
+    </div>
+
+    <div class="container">
+        <h1>Bem-vindo!</h1>
+        <p>Escolha uma vulnerabilidade para explorar:</p>
+
+        <div class="buttons-grid">
+            <a href="http://172.17.2.17:5000/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1" class="menu-item">Command Injection</a>
+            <a href="http://172.17.2.17:5000/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1" class="menu-item">SQL Injection</a>
+            <a href="#" class="menu-item">XSS (Em Breve)</a>
+            <a href="#" class="menu-item">Autenticação Quebrada (Em Breve)</a>
+        </div>
+    </div>
+</body>
+</html>
