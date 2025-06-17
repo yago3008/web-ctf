@@ -124,7 +124,7 @@ def sql_injection_functions(app):
                 image_path = matched_files[0]
                 with open(image_path, 'rb') as img_file:
                     b64_data = base64.b64encode(img_file.read()).decode('utf-8')
-                    cursor.execute("INSERT INTO images (id, image_data, flag) VALUES (?, ?, ?)", (i, b64_data, "FLAG-SQLI_FINISHED"))
+                    cursor.execute("INSERT INTO images (id, image_data, flag) VALUES (?, ?, ?)", (i, b64_data, "FLAG${SQL1-F1N1SH3D}"))
 
             db.commit()
 

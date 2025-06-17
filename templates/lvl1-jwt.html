@@ -31,7 +31,7 @@
             z-index: 10; /* Garante que o container esteja acima dos elementos posicionados absolutamente */
         }
         input[type="text"],
-        input[type="password"] { /* Adicionado para caso precise de input de senha no futuro */
+        input[type="password"] {
             background-color: #4a5568; /* bg-gray-700 */
             border: 1px solid #4a5568;
             color: #e2e8f0;
@@ -112,6 +112,18 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
             z-index: 20; /* Garante que esteja acima de outros elementos */
         }
+        .cookie-display-box {
+            background-color: #2d3748; /* Cor de fundo um pouco mais escura que o container */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            color: #a0aec0; /* text-gray-400 */
+            word-break: break-all;
+            margin-top: 1rem; /* Espaçamento acima do cookie box */
+        }
+        .cookie-display-box strong {
+            color: #e2e8f0; /* text-gray-200 */
+        }
     </style>
 </head>
 <body>
@@ -140,32 +152,64 @@
             <button type="submit">Enviar JWT</button>
         </form>
 
+        <div id="currentCookieDisplay" class="cookie-display-box">
+            <p><strong>Cookie atual:</strong> Carregando...</p>
+        </div>
+
         <div id="responseDisplay" class="response-box">
             A resposta da API aparecerá aqui.
         </div>
     </div>
 
     <script>
+        // Função para ler um cookie específico pelo nome
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i=0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Função para atualizar a exibição do cookie
+        function updateCookieDisplay() {
+            const cookieDisplayElement = document.getElementById('currentCookieDisplay');
+            const jwtToken = getCookie('jwt_token'); // Pega o valor do cookie 'jwt_token'
+
+            if (jwtToken) {
+                cookieDisplayElement.innerHTML = `<p><strong>Cookie atual:</strong> <span class="text-blue-400">${jwtToken}</span></p>`;
+            } else {
+                cookieDisplayElement.innerHTML = `<p><strong>Cookie atual:</strong> <span class="text-red-400">Nenhum JWT encontrado.</span></p>`;
+            }
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Chama a função para exibir o cookie assim que a página carrega
+            updateCookieDisplay();
+
             document.getElementById('jwtForm').addEventListener('submit', async function(event) {
-                event.preventDefault(); // Impede o envio padrão do formulário
+                event.preventDefault();
 
                 const jwtToken = document.getElementById('jwtInput').value;
                 const responseDisplay = document.getElementById('responseDisplay');
 
                 responseDisplay.innerHTML = 'Buscando informações com o JWT...';
-                responseDisplay.className = 'response-box'; // Reseta classes de estilo
+                responseDisplay.className = 'response-box';
 
                 try {
-                    const apiUrl = `http://{{ ip }}:{{ port }}/9c4e8a52-7b88-4a60-bcf6-48c0c9c57e4c-jwt-lvl-1-back`;
+                    const apiUrl = `http://{{ ip }}:{{ port }}/cd691c63-6cb7-4f06-bb75-970c317f0c58-jwt-lvl-1-back`;
 
                     const response = await fetch(apiUrl, {
-                        method: 'POST', // Usamos POST para enviar o JWT no corpo da requisição
+                        method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json', // Informa que estamos enviando JSON
-                            'Accept': 'application/json' // Indica que esperamos JSON de volta
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
-                        body: JSON.stringify({ jwt: jwtToken }) // Envia o JWT no corpo como JSON
+                        body: JSON.stringify({ jwt: jwtToken })
                     });
 
                     if (!response.ok) {
@@ -184,7 +228,7 @@
                         throw new Error(errorMessage);
                     }
 
-                    const data = await response.json(); // Tenta parsear a resposta como JSON
+                    const data = await response.json();
                     
                     let displayHtml = '';
                     if (data.error) {
@@ -194,24 +238,27 @@
                         displayHtml = `<p class="success-message">${data.message}</p>`;
                         responseDisplay.classList.add('success-message');
                     } else if (data.user_info) {
-                        // Exibe as informações do usuário se presentes
                         displayHtml = `
                             <p class="success-message">Informações do Usuário:</p>
                             <pre>${JSON.stringify(data.user_info, null, 2)}</pre>
                         `;
                         responseDisplay.classList.add('success-message');
                     } else {
-                        // Fallback para qualquer outra estrutura de resposta inesperada
                         displayHtml = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
                         responseDisplay.classList.add('success-message');
                     }
 
                     responseDisplay.innerHTML = displayHtml; 
+                    
+                    // ATUALIZA O DISPLAY DO COOKIE APÓS A REQUISIÇÃO SER PROCESSADA E O COOKIE SER ATUALIZADO PELO BACKEND
+                    updateCookieDisplay();
 
                 } catch (error) {
                     console.error('Erro ao enviar JWT:', error);
                     responseDisplay.textContent = `Erro: ${error.message || 'Não foi possível conectar a API.'}`;
                     responseDisplay.classList.add('error-message');
+                    // Garante que o display do cookie ainda seja atualizado mesmo em caso de erro da API
+                    updateCookieDisplay(); 
                 }
             });
         });
