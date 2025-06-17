@@ -109,7 +109,7 @@ def sql_injection_functions(app):
             """
             db.cursor().executescript(schema_sql)
 
-            image_folder = os.path.join(os.path.dirname(__file__), os.pardir, 'images')
+            image_folder = os.path.join(os.path.dirname(__file__), os.pardir, '../images')
 
             cursor = db.cursor()
 

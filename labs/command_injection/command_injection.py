@@ -66,7 +66,7 @@ def command_injection_functions(app):
         return render_template('lvl1-cmdi.html', ip=ip, port=port)
     
     @app.route('/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1-back', methods=['GET'])
-    def lvl1():
+    def lvl1_back_cmdi():
         domain = request.args.get('domain', '127.0.0.1')
         resp = run_rules(domain)
         if resp is not None: return resp
@@ -89,7 +89,7 @@ def command_injection_functions(app):
         return render_template('lvl2-cmdi.html', ip=ip, port=port)
         
     @app.route('/2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2-back', methods=['GET'])
-    def lvl2():
+    def lvl2_back_cmdi():
         domain = request.args.get('domain', '127.0.0.1')
         resp = run_rules(domain)
         if resp is not None: return resp
@@ -115,7 +115,7 @@ def command_injection_functions(app):
         return render_template('lvl3-cmdi.html', ip=ip, port=port)
     
     @app.route('/34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3-back', methods=['GET'])
-    def lvl3():
+    def lvl3_back_cmdi():
         domain = request.args.get('domain', '127.0.0.1')
         resp = run_rules(domain)
         if resp is not None: return resp
