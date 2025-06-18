@@ -18,7 +18,7 @@ def jwt_attack_functions(app):
         "role": role,
         "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
         }
-        token = jwt.encode(payload, SECRET_KEY1, algorithm="HS256")
+        token = jwt.encode(payload, SECRET_KEY2, algorithm="HS256")
         return token
 
     def decode_token_without_validation(token):

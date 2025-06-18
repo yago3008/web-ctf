@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Principal - Vulnerabilidades</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -17,7 +17,7 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
-            position: relative; /* Necessario para posicionamento absoluto do marcador */
+            position: relative; /* Necessario para posicionamento absoluto dos novos botoes */
         }
         .container {
             background-color: #2d3748; /* bg-gray-800 */
@@ -29,7 +29,7 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            z-index: 10; /* Garante que o container esteja acima do marcador se houver sobreposicao */
+            z-index: 10;
         }
         h1 {
             color: #e2e8f0; /* text-gray-200 */
@@ -45,58 +45,130 @@
             margin-top: -0.5rem; /* Ajuste para espaçamento */
             margin-bottom: 1.5rem; /* Espaçamento após o subtítulo */
         }
-        /* Nova classe para o container de botões para flexbox */
         .buttons-grid {
             display: flex;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
-            justify-content: center; /* Centraliza os botões */
-            gap: 1rem; /* Espaço entre os botões */
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .menu-item-wrapper {
+            position: relative;
+            flex-basis: calc(50% - 0.5rem);
+            max-width: calc(50% - 0.5rem);
+            box-sizing: border-box;
         }
         .menu-item {
-            /* Estilos base já existentes */
             background-color: #4299e1; /* bg-blue-500 */
             color: white;
-            padding: 0.75rem 1.5rem; /* Padding mais equilibrado para um visual retangular */
-            border-radius: 0.5rem; /* rounded-md */
-            font-weight: 600; /* font-semibold */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
             transition: background-color 0.2s;
             cursor: pointer;
-            text-decoration: none; /* Remove sublinhado padrão dos links */
-
-            /* Novos estilos para layout e formato retangular */
-            display: flex; /* Usa flexbox para centralizar o conteúdo interno */
-            align-items: center; /* Centraliza verticalmente o texto */
-            justify-content: center; /* Centraliza horizontalmente o texto */
-            text-align: center; /* Garante que o texto seja centralizado para o caso de múltiplas linhas */
-            flex-grow: 1; /* Permite que o item cresça para preencher o espaço */
-            flex-basis: calc(50% - 0.5rem); /* Define a largura base para 2 colunas, considerando o gap */
-            max-width: calc(50% - 0.5rem); /* Garante que não exceda metade da largura do container */
-            /* aspect-ratio: 1 / 1; REMOVIDO para permitir formato retangular */
-            box-sizing: border-box; /* Inclui padding e border na largura e altura */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            min-height: 80px;
+            box-sizing: border-box;
         }
         .menu-item:hover {
             background-color: #3182ce; /* bg-blue-600 */
         }
 
-        /* ESTILOS PARA O MARCADOR DE DIFICULDADE */
-        .difficulty-marker {
+        /* NOVOS ESTILOS PARA OS BOTÕES DE REGISTRO E LOGIN */
+        .auth-buttons-container {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background-color: #ecc94b; /* Amarelo para indicar "Menu" ou "Início" */
-            color: #1a202c;
+            display: flex;
+            gap: 0.5rem; /* Espaçamento entre os botões */
+            z-index: 20;
+        }
+        .auth-button {
+            background-color: #6366f1; /* Cor para os botões de auth (ex: indigo-500) */
+            color: white;
             padding: 0.5rem 1rem;
-            border-radius: 0.5rem; /* rounded-md */
-            font-weight: 700; /* font-bold */
-            font-size: 0.875rem; /* text-sm */
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.875rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            z-index: 20; /* Garante que o marcador esteja acima de tudo */
+            transition: background-color 0.2s;
+            text-decoration: none; /* Remove sublinhado padrão dos links */
+            display: inline-flex; /* Permite que o padding funcione corretamente */
+            align-items: center; /* Centraliza texto verticalmente */
+            justify-content: center; /* Centraliza texto horizontalmente */
+        }
+        .auth-button:hover {
+            background-color: #4f46e5; /* Cor mais escura no hover (ex: indigo-600) */
+        }
+
+
+        /* Estilos para o botão de interrogação */
+        .info-button {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: help;
+            z-index: 20;
+            transition: background-color 0.2s;
+        }
+        .info-button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilos para o tooltip */
+        .tooltip-box {
+            position: absolute;
+            top: 0.25rem;
+            right: calc(0.25rem + 24px + 0.5rem);
+            transform: translateX(100%);
+            
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 280px;
+            min-width: 200px;
+            max-width: calc(100% - 3rem);
+            text-align: left;
+            font-size: 0.9rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        /* Torna o tooltip visível ao passar o mouse sobre o botão de interrogação */
+        .info-button:hover + .tooltip-box {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+        .tooltip-box.active {
+             opacity: 1;
+             visibility: visible;
         }
     </style>
 </head>
 <body>
-    <div class="difficulty-marker">
-        Menu Principal
+    <div class="auth-buttons-container">
+        <a href="http://{{ ip }}:{{ port }}/register" class="auth-button">Registro</a>
+        <a href="http://{{ ip }}:{{ port }}/login" class="auth-button">Login</a>
     </div>
 
     <div class="container">
@@ -104,11 +176,82 @@
         <p>Escolha uma vulnerabilidade para explorar:</p>
 
         <div class="buttons-grid">
-            <a href="http://{{ ip }}:{{ port }}/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1" class="menu-item">Command Injection</a>
-            <a href="http://{{ ip }}:{{ port }}/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1" class="menu-item">SQL Injection</a>
-            <a href="http://{{ ip }}:{{ port }}/cd691c63-6cb7-4f06-bb75-970c317f0c58-jwt-lvl-1" class="menu-item">JWT Attack</a>
-            <a href="#" class="menu-item">CSRF (Em Breve)</a>
+            <div class="menu-item-wrapper">
+                <a href="http://{{ ip }}:{{ port }}/1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1" class="menu-item">Command Injection</a>
+                <span class="info-button" data-vulnerability="command-injection"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-command-injection"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="http://{{ ip }}:{{ port }}/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1" class="menu-item">SQL Injection</a>
+                <span class="info-button" data-vulnerability="sql-injection"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-sql-injection"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="http://{{ ip }}:{{ port }}/cd691c63-6cb7-4f06-bb75-970c317f0c58-jwt-lvl-1" class="menu-item">JWT Attack</a>
+                <span class="info-button" data-vulnerability="jwt-attack"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-jwt-attack"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item">CSRF (Em Breve)</a>
+                <span class="info-button" data-vulnerability="csrf"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-csrf"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item">SSRF (Em Breve)</a>
+                <span class="info-button" data-vulnerability="ssrf"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-ssrf"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item">Race Condition (Em Breve)</a>
+                <span class="info-button" data-vulnerability="race-condition"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-race-condition"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item">BAC (Em Breve)</a>
+                <span class="info-button" data-vulnerability="bac"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-bac"></div>
+            </div>
+
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item">XSS (Em Breve)</a>
+                <span class="info-button" data-vulnerability="xss"><i class="fas fa-question"></i></span>
+                <div class="tooltip-box" id="tooltip-xss"></div>
+            </div>
         </div>
     </div>
+
+    <script>
+        const vulnerabilityDescriptions = {
+            'command-injection': 'Um atacante através de uma funcionalidade do site, consegue fazer o servidor executar comandos no sistema operacional, sendo possível conseguir acesso remoto ao servidor.',
+            'sql-injection': 'Um atacante consegue enganar o banco de dados para que ele execute comandos não autorizados, podendo roubar, modificar ou apagar informações.',
+            'jwt-attack': 'Um atacante tenta manipular um "bilhete" digital (JWT) que comprova a identidade dele para se passar por outra pessoa ou ter acessos privilegiados.',
+            'csrf': 'Um atacante engana a vítima para que ela, sem saber, execute uma ação em um site onde já está logada (ex: fazer uma compra ou mudar a senha).',
+            'ssrf': 'Um atacante força o servidor a fazer requisições para outros servidores ou sistemas internos que não deveriam ser acessíveis externamente.',
+            'race-condition': 'Acontece quando duas ou mais ações iguais tentam acontecer ao mesmo tempo, e a ordem em que são processadas podem afetar o comportamento do servidor.',
+            'bac': 'Um atacante consegue acessar ou alterar dados de outros usuários ou funcionalidades restritas, simplesmente modificando o endereço da página ou parâmetros na requisição.',
+            'xss': 'Um atacante consegue injetar códigos JavaScript em páginas web, que são executados no navegador de outros usuários. Pode levar ao roubo dados ou redirecionamento da vítima.'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const infoButtons = document.querySelectorAll('.info-button');
+
+            infoButtons.forEach(button => {
+                const vulnerability = button.dataset.vulnerability;
+                const tooltipBox = document.getElementById(`tooltip-${vulnerability}`);
+                
+                if (vulnerabilityDescriptions[vulnerability]) {
+                    tooltipBox.textContent = vulnerabilityDescriptions[vulnerability];
+                } else {
+                    tooltipBox.textContent = 'Em breve: Descrição detalhada desta vulnerabilidade.';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

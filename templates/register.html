@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Sua Plataforma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* bg-gray-900 */
+            color: #e2e8f0; /* text-gray-200 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            background-color: #2d3748; /* bg-gray-800 */
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 400px; /* Um pouco mais estreito para formulários */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 10;
+        }
+        h1 {
+            color: #e2e8f0; /* text-gray-200 */
+            font-size: 2.25rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        p.subtitle { /* Estilo para o subtítulo */
+            color: #a0aec0; /* text-gray-400 */
+            text-align: center;
+            font-size: 1rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        input[type="text"],
+        input[type="password"] { /* Removido input[type="email"] */
+            background-color: #4a5568; /* bg-gray-700 */
+            border: 1px solid #4a5568;
+            color: #e2e8f0;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem; /* rounded-md */
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus { /* Removido input[type="email"]:focus */
+            border-color: #63b3ed; /* blue-400 */
+        }
+        button {
+            background-color: #4299e1; /* bg-blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #3182ce; /* bg-blue-600 */
+        }
+        .form-group {
+            margin-bottom: 1rem; /* Espaçamento entre os campos do formulário */
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e0; /* text-gray-300 */
+            font-weight: 500;
+        }
+        .auth-buttons-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 20;
+        }
+        .auth-button {
+            background-color: #6366f1; /* Cor para os botões de auth (ex: indigo-500) */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-button:hover {
+            background-color: #4f46e5; /* Cor mais escura no hover (ex: indigo-600) */
+        }
+        /* Estilo para o botão "ativo" ou da página atual */
+        .auth-button.active {
+            background-color: #4f46e5; /* Cor mais escura para indicar que está ativo */
+            cursor: default; /* Remove o cursor de link */
+        }
+        .auth-button.active:hover {
+            background-color: #4f46e5; /* Mantém a cor no hover se for o ativo */
+        }
+        .message-box {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        .error-message {
+            color: #fc8181; /* red-400 */
+        }
+        .success-message {
+            color: #68d391; /* green-400 */
+        }
+        .link-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        .link-text a {
+            color: #63b3ed; /* blue-400 */
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .link-text a:hover {
+            color: #4299e1; /* blue-500 */
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-buttons-container">
+        <a href="http://{{ ip }}:{{ port }}/register" class="auth-button active">Registro</a>
+        <a href="http://{{ ip }}:{{ port }}/login" class="auth-button">Login</a>
+    </div>
+
+    <div class="container">
+        <h1>Registro</h1>
+        <p class="subtitle">Crie sua conta para acessar o conteúdo!</p>
+
+        <form id="registerForm" class="flex flex-col">
+            <div class="form-group">
+                <label for="username">Nome de Usuário:</label>
+                <input type="text" id="username" name="username" placeholder="Seu nome de usuário" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" placeholder="Sua senha" required>
+            </div>
+            <button type="submit">Registrar</button>
+        </form>
+
+        <div id="messageDisplay" class="message-box mt-4">
+        </div>
+
+        <p class="link-text">
+            Já tem uma conta? <a href="http://{{ ip }}:{{ port }}/login">Faça Login aqui!</a>
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('registerForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value; // Email field removed
+                const messageDisplay = document.getElementById('messageDisplay');
+
+                messageDisplay.textContent = 'Registrando...';
+                messageDisplay.className = 'message-box'; // Resets message classes
+
+                try {
+                    // ATTENTION: Replace with your actual backend URL for registration
+                    const apiUrl = `http://{{ ip }}:{{ port }}/register-back`; 
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password }) // Only username and password are sent
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        messageDisplay.textContent = `Erro: ${data.error || 'Esse usuario ja existe!.'}`;
+                        messageDisplay.classList.add('error-message');
+                    } else {
+                        messageDisplay.textContent = `Sucesso: ${data.message || 'Registro realizado com sucesso!'}`;
+                        messageDisplay.classList.add('success-message');
+                        document.getElementById('registerForm').reset();
+                        // Optional: Redirect to login page
+                        // setTimeout(() => {
+                        //     window.location.href = `http://{{ ip }}:{{ port }}/login`;
+                        // }, 2000); 
+                    }
+
+                } catch (error) {
+                    console.error('Erro ao registrar:', error);
+                    messageDisplay.textContent = `Erro de conexão: ${error.message || 'Não foi possível conectar ao servidor.'}`;
+                    messageDisplay.classList.add('error-message');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
