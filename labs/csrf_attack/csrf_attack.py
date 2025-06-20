@@ -7,3 +7,4 @@ ip = get_local_ip()
 port = get_port()
 ROOT_INDEX = f'http://{ip}:{port}'
 
+print(ROOT_INDEX)
