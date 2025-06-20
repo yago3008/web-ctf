@@ -212,9 +212,9 @@
                         messageDisplay.classList.add('success-message');
                         document.getElementById('registerForm').reset();
                         // Optional: Redirect to login page
-                        // setTimeout(() => {
-                        //     window.location.href = `http://{{ ip }}:{{ port }}/login`;
-                        // }, 2000); 
+                        setTimeout(() => {
+                            window.location.href = `http://{{ ip }}:{{ port }}/login`;
+                        }, 1000); 
                     }
 
                 } catch (error) {
