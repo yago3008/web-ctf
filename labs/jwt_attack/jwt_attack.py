@@ -89,7 +89,7 @@ def jwt_attack_functions(app):
     
     @app.route('/cd691c63-6cb7-4f06-bb75-970c317f0c58-jwt-lvl-1', methods=['GET'])
     def lvl1_front_jwt():
-        return add_token_and_template('lvl1-jwt.html')
+        return add_token_and_template('jwt_attack/lvl1-jwt.html')
     
     @app.route('/cd691c63-6cb7-4f06-bb75-970c317f0c58-jwt-lvl-1-back', methods=['POST'])
     def lvl1_back_jwt():
@@ -113,7 +113,7 @@ def jwt_attack_functions(app):
 
     @app.route('/9c4e8a52-7b88-4a60-bcf6-48c0c9c57e4c-jwt-lvl-2', methods=['GET'])
     def lvl2_front_jwt():
-        return add_token_and_template('lvl2-jwt.html')
+        return add_token_and_template('jwt_attack/lvl2-jwt.html')
 
     @app.route('/9c4e8a52-7b88-4a60-bcf6-48c0c9c57e4c-jwt-lvl-2-back', methods=['POST'])
     def lvl2_back_jwt():
@@ -137,7 +137,7 @@ def jwt_attack_functions(app):
     
     @app.route('/f47ac10b-58cc-4372-a567-0e02b2c3d479-jwt-lvl-3', methods=['GET'])
     def lvl3_front_jwt():
-        return add_token_and_template('lvl3-jwt.html')
+        return add_token_and_template('jwt_attack/lvl3-jwt.html')
     
     @app.route('/f47ac10b-58cc-4372-a567-0e02b2c3d479-jwt-lvl-3-back', methods=['POST'])
     def lvl3_back_jwt():

@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, session, jsonify
 from flask_cors import CORS
 from labs.command_injection.command_injection import command_injection_functions
 from labs.sql_injection.sql_injection import sql_injection_functions
@@ -16,10 +16,18 @@ port = get_port()
 if __name__ == '__main__':
     app = Flask(__name__)
     CORS(app)
+    app.config['SESSION_COOKIE_HTTPONLY'] = False
 
     @app.route('/')
     def home():
         return render_template('main.html', ip=ip, port=port)
+    
+    @app.route('/adm')
+    def adm_route():
+        print(session)
+        if 'user' not in session:
+            return jsonify({'status': 'fail', 'message': 'Usuario não autenticado'}), 401
+        return jsonify({'status': 'ok', 'message': 'Usuario autenticado'}), 200
     
     user_routes(app)
     sql_injection_functions(app)

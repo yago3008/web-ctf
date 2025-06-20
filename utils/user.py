@@ -5,7 +5,8 @@ from getIP import get_local_ip, get_port
 
 ip = get_local_ip()
 port = get_port()
-DB_FILE = 'users.db'
+DB_FILE = os.path.join(os.path.dirname(__file__), '..', 'databases', 'users.db')
+DB_FILE = os.path.abspath(DB_FILE)
 
 def user_routes(app):
     app.secret_key = '*adminnimda*'
@@ -22,6 +23,7 @@ def user_routes(app):
                     flags TEXT DEFAULT ''
                 )
             ''')
+            c.execute('INSERT INTO users (username, password) VALUES (?, ?)', ('bot', 'botbot'))
             conn.commit()
             conn.close()
 
@@ -34,7 +36,7 @@ def user_routes(app):
 
     @app.route('/register', methods=['GET'])
     def register_front():
-        return render_template('register.html', ip=ip, port=port)
+        return render_template('user/register.html', ip=ip, port=port)
     
     @app.route('/register-back', methods=['POST'])
     def register_back():
@@ -61,7 +63,7 @@ def user_routes(app):
 
     @app.route('/login', methods=['GET'])
     def login_front():
-        return render_template('login.html', ip=ip, port=port)
+        return render_template('user/login.html', ip=ip, port=port)
 
     @app.route('/login-back', methods=['POST'])
     def login_back():
@@ -72,17 +74,38 @@ def user_routes(app):
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password)).fetchone()
         conn.close()
-        print(dict(user))
         if user:
             session['user'] = {
                 'id':user['id'],
                 'username':user['username']
             }
-            return jsonify({'status': 'success', 'message': 'Logged in', 'points': user['points'], 'flags': user['flags']})
+            print(dict(user))
+            return jsonify({'status': 'success', 'message': 'Logged in', 'points': user['points'], 'flags': user['flags']}), 200
         else:
             return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
 
+    @app.route('/change-password', methods=['POST'])
+    def change_password():
+        if 'user' not in session:
+            return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
+        data = request.json
+        new_password = data.get('new_password')
+
+        if not new_password:
+            return jsonify({'status': 'error', 'message': 'New password required'}), 400
+        user_id = session['user']['id']
+        
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            c = conn.cursor()
+            c.execute('UPDATE users SET password = ? WHERE id = ?', (new_password, user_id))
+            conn.commit()
+            conn.close()
+            return jsonify({'status': 'ok', 'message': 'Password updated successfully'}), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': f'Failed to update password: {str(e)}'}), 500
+        
     @app.route('/profile-back', methods=['GET'])
     def profile():
         username = session.get('username')
