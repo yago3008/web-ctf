@@ -8,16 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* bg-gray-900 */
-            color: #e2e8f0; /* text-gray-200 */
+            background-color: #1a202c; 
+            color: #e2e8f0; 
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-            position: relative; /* Necessario para posicionamento absoluto dos novos botoes */
+            padding: 1rem; 
+            overflow-x: hidden; 
+            position: relative;
         }
         .container {
             background-color: #2d3748; /* bg-gray-800 */
@@ -42,8 +46,8 @@
             color: #a0aec0; /* text-gray-400 */
             text-align: center;
             font-size: 1.125rem; /* text-lg */
-            margin-top: -0.5rem; /* Ajuste para espaçamento */
-            margin-bottom: 1.5rem; /* Espaçamento após o subtítulo */
+            margin-top: -0.5rem;
+            margin-bottom: 1.5rem;
         }
         .buttons-grid {
             display: flex;
@@ -85,7 +89,7 @@
             top: 1rem;
             right: 1rem;
             display: flex;
-            gap: 0.5rem; /* Espaçamento entre os botões */
+            gap: 0.5rem;
             z-index: 20;
         }
         .auth-button {
@@ -97,15 +101,14 @@
             font-size: 0.875rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: background-color 0.2s;
-            text-decoration: none; /* Remove sublinhado padrão dos links */
-            display: inline-flex; /* Permite que o padding funcione corretamente */
-            align-items: center; /* Centraliza texto verticalmente */
-            justify-content: center; /* Centraliza texto horizontalmente */
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .auth-button:hover {
             background-color: #4f46e5; /* Cor mais escura no hover (ex: indigo-600) */
         }
-
 
         /* Estilos para o botão de interrogação */
         .info-button {
@@ -133,8 +136,9 @@
         .tooltip-box {
             position: absolute;
             top: 0.25rem;
-            right: calc(0.25rem + 24px + 0.5rem);
-            transform: translateX(100%);
+            /* Changed positioning for better default behavior on wider screens */
+            right: calc(0.25rem + 24px + 0.5rem); /* Keeps it to the left of the info button */
+            transform: translateX(0); /* Removed the initial translateX */
             
             background-color: #2d3748;
             color: #e2e8f0;
@@ -143,7 +147,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             width: 280px;
             min-width: 200px;
-            max-width: calc(100% - 3rem);
+            max-width: calc(100% - 3rem); /* This needs to be relative to the wrapper, or global padding needs to be consistent */
             text-align: left;
             font-size: 0.9rem;
             opacity: 0;
@@ -157,11 +161,32 @@
         .info-button:hover + .tooltip-box {
             opacity: 1;
             visibility: visible;
-            transform: translateX(0);
+            /* Re-add transform if you want it to slide in from the right when hovering */
+            /* transform: translateX(0); */ 
         }
         .tooltip-box.active {
-             opacity: 1;
-             visibility: visible;
+            opacity: 1;
+            visibility: visible;
+            /* transform: translateX(0); */
+        }
+
+        /* Media query for smaller screens - adjust tooltip positioning */
+        @media (max-width: 768px) {
+            .tooltip-box {
+                left: 50%;
+                transform: translateX(-50%);
+                top: 35px; /* Position below the button */
+                right: auto; /* Reset right property */
+                margin-right: 0; /* Reset margin-right */
+                width: calc(100% - 2rem); /* Take full width minus the 1rem body padding on each side */
+                max-width: none; /* Remove max-width on smaller screens to allow full width usage */
+            }
+            .info-button:hover + .tooltip-box,
+            .tooltip-box.active {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%); /* Re-center after hover */
+            }
         }
     </style>
 </head>
