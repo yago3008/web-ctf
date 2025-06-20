@@ -142,15 +142,12 @@
         .logged-in-button:hover {
             background-color: #38a169; /* green-600 */
         }
-        /* Remover este estilo, pois o botão de logout será removido */
-        /*
-        .logged-in-button.logout {
-            background-color: #e53e3e; 
+        .logged-in-button.logout { /* Estilo específico para o botão de logout */
+            background-color: #e53e3e; /* red-500 para "Sair" */
         }
         .logged-in-button.logout:hover {
-            background-color: #c53030; 
+            background-color: #c53030; /* red-600 */
         }
-        */
 
         /* Estilos para o botão de interrogação */
         .info-button {
@@ -272,7 +269,7 @@
             transition: background-color 0.2s;
             cursor: pointer;
             text-align: center;
-            width: 100%;
+            width: 100%; /* Botões do modal agora ocupam 100% da largura */
         }
         .modal-content button:hover {
             background-color: #3182ce;
@@ -287,6 +284,8 @@
             color: #e2e8f0;
             font-size: 1.5rem;
             cursor: pointer;
+            width: auto; /* Para que o botão 'x' não ocupe 100% de largura */
+            padding: 0; /* Remove padding extra do botão 'x' */
         }
 
         .modal-message-box {
@@ -318,7 +317,7 @@
 
     <div id="loggedInButtonsContainer" class="logged-in-buttons-container">
         <button id="changePasswordButton" class="logged-in-button">Trocar Senha</button>
-        </div>
+        <button id="logoutButton" class="logged-in-button logout">Sair</button> </div>
 
     <div class="container">
         <h1>Bem-vindo!</h1>
@@ -404,11 +403,8 @@
         // --- Variáveis dos elementos ---
         const authButtonsContainer = document.getElementById('authButtonsContainer');
         const loggedInButtonsContainer = document.getElementById('loggedInButtonsContainer');
-        // A linha abaixo foi removida:
-        // const loggedInUsernameSpan = document.getElementById('loggedInUsername'); 
         const changePasswordButton = document.getElementById('changePasswordButton');
-        // A linha abaixo foi removida:
-        // const logoutButton = document.getElementById('logoutButton');
+        const logoutButton = document.getElementById('logoutButton'); // Adicionado novamente
 
         const changePasswordModal = document.getElementById('changePasswordModal');
         const closeModalButton = document.getElementById('closeModalButton');
@@ -431,18 +427,45 @@
         // --- Função para verificar o status do usuário e atualizar a UI ---
         function checkUserStatus() {
             const sessionCookie = getCookie('session'); // Nome do cookie da sessão Flask
-            console.log("Valor do cookie 'session':", sessionCookie); // Console log mantido para debug
+            console.log("Valor do cookie 'session':", sessionCookie); 
 
             if (sessionCookie) {
-                console.log('Cookie de sessão encontrado. Exibindo botão de Trocar Senha.');
+                console.log('Cookie de sessão encontrado. Exibindo botões de usuário logado.');
                 authButtonsContainer.style.display = 'none';
                 loggedInButtonsContainer.style.display = 'flex';
-                // A linha abaixo foi removida:
-                // loggedInUsernameSpan.textContent = `Olá, ${username}!`; 
             } else {
                 console.log('Cookie de sessão NÃO encontrado. Exibindo botões de Registro/Login.');
                 authButtonsContainer.style.display = 'flex';
                 loggedInButtonsContainer.style.display = 'none';
+            }
+        }
+
+        // --- Função para fazer logout ---
+        async function performLogout() {
+            try {
+                const response = await fetch(`http://{{ ip }}:{{ port }}/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log(data.message || 'Você foi desconectado.');
+                } else {
+                    console.error(`Erro ao desconectar: ${data.error || 'Tente novamente.'}`);
+                }
+            } catch (error) {
+                console.error('Erro de conexão ao tentar desconectar:', error);
+            } finally {
+                // Independentemente do sucesso ou falha da requisição de logout,
+                // limpa o cookie localmente e redireciona.
+                document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; 
+                checkUserStatus(); // Atualiza a UI para mostrar botões de Login/Registro
+                window.location.href = `http://{{ ip }}:{{ port }}/login`; // Redireciona para a página de login
             }
         }
 
@@ -466,18 +489,17 @@
 
             // Abrir o modal de troca de senha
             changePasswordButton.addEventListener('click', () => {
-                // Re-verifica o status antes de abrir o modal, para garantir que ainda está logado
                 const sessionCookie = getCookie('session');
                 if (!sessionCookie) {
                     alert('Você não está mais logado. Faça login novamente.');
-                    checkUserStatus(); // Atualiza a UI
+                    checkUserStatus(); 
                     return;
                 }
 
                 changePasswordModal.classList.add('show');
-                modalMessageDisplay.textContent = ''; // Limpa mensagens anteriores
+                modalMessageDisplay.textContent = ''; 
                 modalMessageDisplay.classList.remove('error-message', 'success-message');
-                newPasswordInput.value = ''; // Limpa o campo da senha
+                newPasswordInput.value = ''; 
             });
 
             // Fechar o modal
@@ -502,11 +524,10 @@
                     return;
                 }
                 
-                // Verifica novamente se o cookie de sessão ainda existe antes de enviar
                 if (!getCookie('session')) {
                     modalMessageDisplay.textContent = 'Sessão expirada. Faça login novamente.';
                     modalMessageDisplay.classList.add('error-message');
-                    checkUserStatus(); // Atualiza a UI
+                    checkUserStatus(); 
                     return;
                 }
 
@@ -514,7 +535,6 @@
                 modalMessageDisplay.classList.remove('error-message', 'success-message');
 
                 try {
-                    // O navegador enviará o cookie de sessão automaticamente com esta requisição.
                     const apiUrl = `http://{{ ip }}:{{ port }}/change-password`; 
 
                     const response = await fetch(apiUrl, {
@@ -534,11 +554,11 @@
                     } else {
                         modalMessageDisplay.textContent = `Sucesso: ${data.message || 'Senha alterada com sucesso!'}`;
                         modalMessageDisplay.classList.add('success-message');
-                        setTimeout(() => {
+                        // Após sucesso na troca de senha, faz logout e redireciona
+                        setTimeout(async () => {
                             changePasswordModal.classList.remove('show');
                             newPasswordInput.value = ''; 
-                            // A sessão no Flask pode ser atualizada/revalidada após a troca de senha.
-                            // Não precisamos de login novamente aqui se a sessão for mantida.
+                            await performLogout(); // Chama a função de logout e redirecionamento
                         }, 1500); 
                     }
 
@@ -549,34 +569,10 @@
                 }
             });
 
-            // O event listener para o botão de logout foi removido.
-            /*
+            // Botão de Sair (Logout)
             logoutButton.addEventListener('click', async () => {
-                try {
-                    const response = await fetch(`http://{{ ip }}:{{ port }}/logout`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        alert(data.message || 'Você foi desconectado.');
-                    } else {
-                        alert(`Erro ao desconectar: ${data.error || 'Tente novamente.'}`);
-                    }
-                } catch (error) {
-                    console.error('Erro ao fazer logout:', error);
-                    alert('Erro de conexão ao tentar desconectar.');
-                } finally {
-                    document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; 
-                    checkUserStatus(); 
-                }
+                await performLogout(); // Chama a função de logout
             });
-            */
         });
     </script>
 </body>
