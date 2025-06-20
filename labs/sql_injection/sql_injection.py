@@ -130,7 +130,7 @@ def sql_injection_functions(app):
 
     @app.route('/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1', methods=['GET'])
     def lvl1_front_sqli():
-        return render_template('lvl1-sqli.html', ip=ip, port=port)
+        return render_template('sql_injection/lvl1-sqli.html', ip=ip, port=port)
 
     @app.route('/82eec8cf-d431-42d8-b6cd-08c2fd40bdf7-sqli-lvl-1-back', methods=['GET'])
     def lvl1_back_sqli():
@@ -165,7 +165,7 @@ def sql_injection_functions(app):
 
     @app.route('/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2', methods=['GET'])
     def lvl2_front_sqli():
-        return render_template('lvl2-sqli.html', ip=ip, port=port)
+        return render_template('sql_injection/lvl2-sqli.html', ip=ip, port=port)
 
     @app.route('/3b82a2d2-5e4e-47b0-9e50-3bba8d4dc6de-sqli-lvl-2-back', methods=['GET'])
     def lvl2_back_sqli():
@@ -200,7 +200,7 @@ def sql_injection_functions(app):
 
     @app.route('/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3', methods=['GET'])
     def lvl3_front_sqli():
-        return render_template('lvl3-sqli.html', ip=ip, port=port)
+        return render_template('sql_injection/lvl3-sqli.html', ip=ip, port=port)
 
     @app.route('/c431d46b-3db1-4728-b29c-25764d3be103-sqli-lvl-3-back', methods=['GET'])
     def lvl3_back_sqli():
