@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, session, render_template
 import sqlite3, os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from getIP import get_local_ip, get_port
+from system import get_flags
 
 ip = get_local_ip()
 port = get_port()

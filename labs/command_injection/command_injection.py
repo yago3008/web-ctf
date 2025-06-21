@@ -1,5 +1,6 @@
 import os, subprocess, re, urllib, sys
-from flask import Flask, request, g, make_response, redirect, render_template, jsonify
+from flask import Flask, request, g, make_response, redirect, render_template, jsonify, session
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from getIP import get_local_ip, get_port
 
@@ -22,9 +23,9 @@ def command_injection_functions(app):
             "34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3"
         ]
         flags = {
-            "1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1": f"{ROOT_INDEX}/2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2?domain=127.0.0.1",
-            "2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2": f"{ROOT_INDEX}/34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3?domain=127.0.0.1",
-            "34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3": "FLAG${Y0U-R0CK}"
+            "1d8f3d1a-b55b-4d23-b1cd-fd3d1e8a67e9-cmdi-lvl-1": flags["cmdi-lvl-1"],
+            "2f8b1e6a-9c8d-4fd1-97b2-5db0cda55d0e-cmdi-lvl-2": flags["cmdi-lvl-2"],
+            "34f7e6a2-9b8c-4e17-82f1-3c5d9bfa2a11-cmdi-lvl-3": flags["cmdi-lvl-3"]
         }
         
         for i, d in enumerate(dirs):
