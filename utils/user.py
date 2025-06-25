@@ -9,7 +9,6 @@ DB_FILE = os.path.join(os.path.dirname(__file__), '..', 'databases', 'users.db')
 DB_FILE = os.path.abspath(DB_FILE)
 
 def user_routes(app):
-    app.secret_key = '*adminnimda*'
     def init_db():
         if not os.path.exists(DB_FILE):
             conn = sqlite3.connect(DB_FILE)
@@ -89,13 +88,18 @@ def user_routes(app):
         if 'user' not in session:
             return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
-        data = request.json
+        # Aceitar tanto JSON quanto form-urlencoded
+        data = request.get_json(silent=True)
+        if not data:
+            data = request.form
+
         new_password = data.get('new_password')
 
         if not new_password:
             return jsonify({'status': 'error', 'message': 'New password required'}), 400
+
         user_id = session['user']['id']
-        
+
         try:
             conn = sqlite3.connect(DB_FILE)
             c = conn.cursor()
@@ -105,6 +109,7 @@ def user_routes(app):
             return jsonify({'status': 'ok', 'message': 'Password updated successfully'}), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': f'Failed to update password: {str(e)}'}), 500
+
     
     @app.route('/logout')
     def logout():
