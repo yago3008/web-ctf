@@ -24,7 +24,7 @@ def csrf_attack_functions(app):
     def get_bot_browser(login_url):
         # Configurar o navegador
         options = Options()
-        options.add_argument("--headless")  # Se quiser rodar em background
+        options.add_argument("--headless")
         driver = webdriver.Chrome(options=options)
 
         # Acessa a página de login
@@ -46,8 +46,6 @@ def csrf_attack_functions(app):
         # Agora o navegador já está com o cookie de sessão do bot
         driver.get(malicious_url)
         time.sleep(2)  # Dá tempo pro JavaScript do atacante executar o CSRF
-
-        print(driver.page_source)
         driver.quit()
 
     def get_bot_password():
@@ -77,7 +75,7 @@ def csrf_attack_functions(app):
         if current_bot_password != get_bot_password():
             return jsonify({"result": 'FLAG-PINTO'}), 200
         return jsonify({"error": 'error to connect to your link or password has not changed'}), 500
-
+    
 if __name__ == '__main__':
     pass
     app = Flask(__name__)

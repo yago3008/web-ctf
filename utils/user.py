@@ -88,7 +88,6 @@ def user_routes(app):
         if 'user' not in session:
             return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
 
-        # Aceitar tanto JSON quanto form-urlencoded
         data = request.get_json(silent=True)
         if not data:
             data = request.form
@@ -106,6 +105,7 @@ def user_routes(app):
             c.execute('UPDATE users SET password = ? WHERE id = ?', (new_password, user_id))
             conn.commit()
             conn.close()
+            session.clear()
             return jsonify({'status': 'ok', 'message': 'Password updated successfully'}), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': f'Failed to update password: {str(e)}'}), 500
