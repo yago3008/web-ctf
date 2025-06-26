@@ -59,12 +59,56 @@ def csrf_attack_functions(app):
         else:
             return None
 
+    @app.route('/change-password-1', methods=['POST'])
+    def change_password_1():
+        if 'user' not in session:
+            return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+        data = request.get_json(silent=True)
+        if not data:
+            data = request.form
+
+        new_password = data.get('new_password')
+
+        if not new_password:
+            return jsonify({'status': 'error', 'message': 'New password required'}), 400
+
+        user_id = session['user']['id']
+
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            c = conn.cursor()
+            c.execute('UPDATE users SET password = ? WHERE id = ?', (new_password, user_id))
+            conn.commit()
+            conn.close()
+            session.clear()
+            return jsonify({'status': 'ok', 'message': 'Password updated successfully'}), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': f'Failed to update password: {str(e)}'}), 500
+
     @app.route('/3b8f23c4-9c5a-4f27-8d3d-5fcb5b3e2746-csrf-lvl-1', methods=['GET'])
     def lvl1_front_csrf():
         return render_template('csrf_attack/lvl1-csrf.html', ip=ip, port=port)
     
     @app.route('/3b8f23c4-9c5a-4f27-8d3d-5fcb5b3e2746-csrf-lvl-1-back', methods=['POST'])
     def lvl1_back_csrf():
+        data = request.get_json() or {}
+        csrf_url = data.get('url', '')
+        current_bot_password = get_bot_password()
+
+        driver = get_bot_browser(f'{ROOT_INDEX}/login')
+        bot_open_csrf_link(driver, csrf_url)
+
+        if current_bot_password != get_bot_password():
+            return jsonify({"result": f'{ROOT_INDEX}/5f46e7c0-39ad-4a42-9d25-d296c003b6f6-csrf-lvl-2'}), 200
+        return jsonify({"error": 'error to connect to your link or password has not changed'}), 500
+    
+    @app.route('/5f46e7c0-39ad-4a42-9d25-d296c003b6f6-csrf-lvl-2', methods=['GET'])
+    def lvl2_front_csrf():
+        return render_template('csrf_attack/lvl2-csrf.html', ip=ip, port=port)
+    
+    @app.route('/5f46e7c0-39ad-4a42-9d25-d296c003b6f6-csrf-lvl-2-back', methods=['POST'])
+    def lvl2_back_csrf():
         data = request.get_json() or {}
         csrf_url = data.get('url', '')
         current_bot_password = get_bot_password()
